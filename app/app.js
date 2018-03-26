@@ -75,21 +75,39 @@ exports.scrape = async function(){
 
                     let email = tableRows[j].childNodes[3].innerText;
                     let fullName = tableRows[j].childNodes[4].innerText;
-                    let branch = tableRows[j].childNodes[5].innerText.substr(0,2);
-                    let created = tableRows[j].childNodes[6].innerText;
-                    let lastLogon = tableRows[j].childNodes[7].innerText;
+                    let branch = tableRows[j].childNodes[5].innerText.substr(0, 2);
 
-                    data.push({email: email, fullName: fullName, branch: branch, created: created, lastLogon: lastLogon});
+                    branchName = getBranchName(branch);
+
+                    data.push({email: email.toLowerCase(), fullName: fullName, branch: branchName});
 
                 }
 
                 return data;
 
+                function getBranchName(branch) {
+
+                    var branchNumber;
+                    
+                    if(branch < 10) {
+
+                        branchNumber = Number(branch.substr(1, 2));
+
+                    }else {
+
+                        branchNumber = Number(branch);
+
+                    }
+
+                    var branches = ['', 'Mayfield', 'Princeton', 'Russellville', 'Morganfield', 'Clarksville', 'Clinton', 'Cypress', 'Paducah', 'Hopkinsville', 'Jasper', 'Evansville', 'Poseyville', '', 'Newberry'];
+
+                    return branches[branchNumber];
+            
+                }
+
             });
 
             customerData = customerData.concat(result);
-
-            console.log(customerData);
 
         }
 
@@ -107,5 +125,6 @@ exports.scrape = async function(){
 	}
 
 	await browser.close();
-	return {err: returnError, customerData: customerData};
+    return {err: returnError, customerData: customerData};
+
 };
