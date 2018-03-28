@@ -16,6 +16,7 @@
     "dotenv": "^5.0.1",
     "emma-sdk": "0.0.3",
     "mongoose": "^5.0.11",
-    "puppeteer": "^1.2.0"
+    "puppeteer": "^1.2.0",
+    "winston": "^2.4.1"
   }
 }

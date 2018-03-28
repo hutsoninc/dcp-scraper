@@ -2,6 +2,7 @@ require('dotenv').config();
 const app = require('./app/app');
 const index = require('./index');
 const Emma = require('emma-sdk');
+var winston = require('winston');
 
 // Models
 var Customer = require('./app/models/Customer.js');
@@ -12,12 +13,22 @@ var emma = new Emma({
     accountID: process.env.EMMA_ACCOUNT_ID
 });
 
+var today = new Date();
+var todayString = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+
+var logger = new (winston.Logger)({
+    transports: [
+      new (winston.transports.Console)(),
+      new (winston.transports.File)({filename: './logs/' + todayString + '.log'})
+    ]
+  });
+
 index.startup().then(() => {
 
     app.scrape().then(data => {
         
         if(data.err){
-            console.log('Error occured. Exiting...');
+            logger.log('Error occured. Exiting...');
             process.exit(0);
         }
         
@@ -48,12 +59,12 @@ index.startup().then(() => {
                                 group_ids: [3301727]
                             }, (err) => {
 
-                                if(err) console.log(err);
+                                if(err) logger.log(err);
 
                                 createCustomer(res.member_id);
     
                                 // Report that customer was updated in Emma
-                                console.log('Customer updated in Emma: ' + currentCustomer.email);
+                                logger.log('Customer updated in Emma: ' + currentCustomer.email);
 
                                 newGroupMembers.push(res.member_id);
 
@@ -70,12 +81,12 @@ index.startup().then(() => {
                                 }
                             }, (err, res) => {
         
-                                if(err) console.log(err);
+                                if(err) logger.log(err);
                 
                                 createCustomer(res.member_id);
     
                                 // Report that customer was added to Emma
-                                console.log('Customer added to Emma: ' + currentCustomer.email);
+                                logger.log('Customer added to Emma: ' + currentCustomer.email);
                                 
                             });
                             
@@ -101,10 +112,10 @@ index.startup().then(() => {
                     // Save new customer
                     newCustomer.save(err => {
                         
-                        if(err) console.log(err);
+                        if(err) logger.log(err);
                         
                         // Report that new customer was saved
-                        console.log('Customer added to database: ' + currentCustomer.email);
+                        logger.log('Customer added to database: ' + currentCustomer.email);
 
                         increment();
     
@@ -130,9 +141,9 @@ index.startup().then(() => {
                             member_ids: newGroupMembers
                         }, (err, res) => {
     
-                            if(err) console.log(err);
+                            if(err) logger.log(err);
     
-                            console.log('Customers added to Emma group.');
+                            logger.log('Customers added to Emma group.');
     
                             exitScript();
     
@@ -146,7 +157,7 @@ index.startup().then(() => {
 
                     function exitScript() {
 
-                        console.log('Finished processing.');
+                        logger.log('Finished processing.');
                         process.exit(0);
 
                     }
@@ -161,7 +172,7 @@ index.startup().then(() => {
 
 }, err => {
 
-    console.log(err);
+    logger.log(err);
 
 });
 
