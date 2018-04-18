@@ -37,6 +37,7 @@ exports.startup = function(){
 
 		db.on('error', function(err){
 
+			logger.log('MongoDB error: ' + err);
 			reject(err);
 
 		});
