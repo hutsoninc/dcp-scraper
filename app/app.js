@@ -1,21 +1,13 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
 const helper = require('./helper.js');
-var winston = require('winston');
 
 var today = new Date();
 var todayString = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
 
-var logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.Console)(),
-      new (winston.transports.File)({filename: './logs/' + todayString + '.log'})
-    ]
-  });
-
 exports.scrape = async function(){
 
-    logger.log('Starting scrape.');
+    console.log('Starting scrape.');
     
     const options = {
         headless: false,
@@ -129,7 +121,7 @@ exports.scrape = async function(){
 	}catch(err){
 
 		if(err){
-			logger.log(err);
+			console.log(err);
 			returnError = err;
 		}
 

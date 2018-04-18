@@ -1,16 +1,9 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-var winston = require('winston');
 
 var today = new Date();
 var todayString = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
 
-var logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.Console)(),
-      new (winston.transports.File)({filename: './logs/' + todayString + '.log'})
-    ]
-  });
 
 exports.startup = function(){
 
@@ -30,14 +23,14 @@ exports.startup = function(){
 
 		db.on('connected', function(ref){
 
-			logger.log('MongoDB connected');
+			console.log('MongoDB connected');
 			resolve();
 
 		});
 
 		db.on('error', function(err){
 
-			logger.log('MongoDB error: ' + err);
+			console.log('MongoDB error: ' + err);
 			reject(err);
 
 		});
