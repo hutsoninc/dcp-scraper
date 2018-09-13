@@ -24,6 +24,7 @@ exports.run = function () {
             }
 
             var i = 0;
+            var newGroupMembers = [];
 
             (function processCustomer() {
 
@@ -50,17 +51,12 @@ exports.run = function () {
 
                                     if (err) console.log(err);
 
-                                    // Add to group
-                                    emma.member.withID(res.member_id).groups.add({group_ids: [3301727]}, err => {
+                                    newGroupMembers.push(res.member_id)
+                                    
+                                    createCustomer(res.member_id);
 
-                                        if (err) console.log(err);
-                                        
-                                        createCustomer(res.member_id);
-    
-                                        // Report that customer was updated in Emma
-                                        console.log('Customer updated in Emma: ' + currentCustomer.email);
-                                        
-                                    });
+                                    // Report that customer was updated in Emma
+                                    console.log('Customer updated in Emma: ' + currentCustomer.email);
 
                                 });
 
@@ -130,8 +126,32 @@ exports.run = function () {
 
                     } else {
 
-                        console.log('Finished processing.');
-                        process.exit(0);
+                        if(newGroupMembers.length > 0) {
+    
+                            emma.group.withID(3301727).addMembers({
+                                member_ids: newGroupMembers
+                            }, (err, res) => {
+        
+                                if(err) console.log(err);
+        
+                                console.log('Customers added to Emma group.');
+        
+                                exitScript();
+        
+                            });
+    
+                        }else {
+    
+                            exitScript();
+    
+                        }
+    
+                        function exitScript() {
+    
+                            console.log('Finished processing.');
+                            process.exit(0);
+    
+                        }
 
                     }
 
