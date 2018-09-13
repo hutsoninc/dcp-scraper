@@ -2,16 +2,17 @@ require('dotenv').config();
 const puppeteer = require('puppeteer');
 const helper = require('./helper.js');
 
-var today = new Date();
-var todayString = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
-
 exports.scrape = async function(){
 
     console.log('Starting scrape.');
     
     const options = {
-        headless: false,
+        headless: true,
         ignoreHTTPSErrors: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
     };
 
     var returnError;
@@ -32,7 +33,7 @@ exports.scrape = async function(){
         await helper.delay(1000);
         await page.click('#p_lt_zonecontent_LogonForm_Login1_LoginButton');
 
-        await helper.delay(5000);
+        await helper.delay(10000);
 
         await page.goto('https://hutson.dealercustomerportal.com/Dealers/Customers');
 
@@ -125,7 +126,9 @@ exports.scrape = async function(){
 			returnError = err;
 		}
 
-	}
+    }
+    
+    console.log("Finished scrape");
 
 	await browser.close();
     return {err: returnError, customerData: customerData};

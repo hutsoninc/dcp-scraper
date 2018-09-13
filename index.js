@@ -7,6 +7,8 @@ var todayString = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.g
 
 exports.startup = function(){
 
+	console.log('Date: ' + todayString);
+
 	return new Promise(function(resolve, reject){
 			
 		// Set up default mongoose connection
@@ -14,7 +16,10 @@ exports.startup = function(){
 
 		mongoose.connect(mongoDB, function(err) {
 
-			if(err) return logger.error(err);
+			if(err) {
+				console.log(err);
+				process.exit();
+			}
 
 		});
 
