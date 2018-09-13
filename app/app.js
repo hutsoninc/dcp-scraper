@@ -2,10 +2,10 @@ require('dotenv').config();
 const puppeteer = require('puppeteer');
 const helper = require('./helper.js');
 
-exports.scrape = async function(){
+exports.scrape = async function () {
 
     console.log('Starting scrape.');
-    
+
     const options = {
         headless: true,
         ignoreHTTPSErrors: true,
@@ -16,13 +16,13 @@ exports.scrape = async function(){
     };
 
     var returnError;
-	
-	const browser = await puppeteer.launch(options);
-	var page = await browser.newPage();
 
-	try{
+    const browser = await puppeteer.launch(options);
+    var page = await browser.newPage();
 
-		var customerPages, 
+    try {
+
+        var customerPages,
             customerData = [];
 
         await page.goto('https://hutson.dealercustomerportal.com/Login');
@@ -57,9 +57,9 @@ exports.scrape = async function(){
 
         });
 
-        for(var i = 1; i <= customerPages; i++){
+        for (var i = 1; i <= customerPages; i++) {
 
-            if( i != 1){
+            if (i != 1) {
                 await page.click('.pagination-list > li:nth-child(' + (i + 1) + ') a');
             }
 
@@ -75,7 +75,7 @@ exports.scrape = async function(){
 
                 var tableRows = tableEl.querySelectorAll('tr');
 
-                for(var j = 1; j < tableRows.length; j++) {
+                for (var j = 1; j < tableRows.length; j++) {
 
                     let email = tableRows[j].childNodes[3].innerText;
                     let fullName = tableRows[j].childNodes[4].innerText;
@@ -83,7 +83,7 @@ exports.scrape = async function(){
 
                     branchName = getBranchName(branch);
 
-                    data.push({email: email.toLowerCase(), fullName: fullName, branch: branchName});
+                    data.push({ email: email.toLowerCase(), fullName: fullName, branch: branchName });
 
                 }
 
@@ -92,12 +92,12 @@ exports.scrape = async function(){
                 function getBranchName(branch) {
 
                     var branchNumber;
-                    
-                    if(branch < 10) {
+
+                    if (branch < 10) {
 
                         branchNumber = Number(branch.substr(1, 2));
 
-                    }else {
+                    } else {
 
                         branchNumber = Number(branch);
 
@@ -106,7 +106,7 @@ exports.scrape = async function(){
                     var branches = ['', 'Mayfield', 'Princeton', 'Russellville', 'Morganfield', 'Clarksville', 'Clinton', 'Cypress', 'Paducah', 'Hopkinsville', 'Jasper', 'Evansville', 'Poseyville', '', 'Newberry'];
 
                     return branches[branchNumber];
-            
+
                 }
 
             });
@@ -116,21 +116,21 @@ exports.scrape = async function(){
         }
 
         await helper.delay(15000);
-        
+
         await browser.close();
 
-	}catch(err){
+    } catch (err) {
 
-		if(err){
-			console.log(err);
-			returnError = err;
-		}
+        if (err) {
+            console.log(err);
+            returnError = err;
+        }
 
     }
-    
+
     console.log("Finished scrape");
 
-	await browser.close();
-    return {err: returnError, customerData: customerData};
+    await browser.close();
+    return { err: returnError, customerData: customerData };
 
 };
