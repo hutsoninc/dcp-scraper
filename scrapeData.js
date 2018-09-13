@@ -24,7 +24,6 @@ exports.run = function () {
             }
 
             var i = 0;
-            var newGroupMembers = [];
 
             (function processCustomer() {
 
@@ -46,16 +45,22 @@ exports.run = function () {
                                     fields: {
                                         "full-name": currentCustomer.fullName,
                                         "store-location": currentCustomer.branch
-                                    },
-                                    group_ids: [3301727]
+                                    }
                                 }, (err) => {
 
                                     if (err) console.log(err);
 
-                                    createCustomer(res.member_id);
+                                    // Add to group
+                                    emma.member.withID(res.member_id).groups.add({group_ids: [3301727]}, err => {
 
-                                    // Report that customer was updated in Emma
-                                    console.log('Customer updated in Emma: ' + currentCustomer.email);
+                                        if (err) console.log(err);
+                                        
+                                        createCustomer(res.member_id);
+    
+                                        // Report that customer was updated in Emma
+                                        console.log('Customer updated in Emma: ' + currentCustomer.email);
+                                        
+                                    });
 
                                 });
 
