@@ -42,12 +42,16 @@ exports.run = function () {
                             if (res) {
 
                                 // Customer in Emma
-                                emma.member.withID(res.member_id).update({
+                                emma.member.signup({
+                                    email: currentCustomer.email,
                                     fields: {
                                         "full-name": currentCustomer.fullName,
                                         "store-location": currentCustomer.branch
-                                    }
-                                }, (err) => {
+                                    },
+                                    group_ids: [3301727],
+                                    signup_form_id: 1883927,
+                                    opt_in_confirmation: false
+                                }, (err, res) => {
 
                                     if (err) console.log(err);
 
@@ -63,13 +67,15 @@ exports.run = function () {
                             } else {
 
                                 // Customer not in Emma
-                                emma.member.addOne({
+                                emma.member.signup({
                                     email: currentCustomer.email,
                                     fields: {
                                         "full-name": currentCustomer.fullName,
                                         "store-location": currentCustomer.branch
                                     },
-                                    group_ids: [3301727]
+                                    group_ids: [3301727],
+                                    signup_form_id: 1883927,
+                                    opt_in_confirmation: false
                                 }, (err, res) => {
 
                                     if (err) console.log(err);
@@ -126,25 +132,25 @@ exports.run = function () {
 
                     } else {
 
-                        if(newGroupMembers.length > 0) {
+                        // if(newGroupMembers.length > 0) {
     
-                            emma.group.withID(3301727).addMembers({
-                                member_ids: newGroupMembers
-                            }, (err, res) => {
+                        //     emma.group.withID(3301727).addMembers({
+                        //         member_ids: newGroupMembers
+                        //     }, (err, res) => {
         
-                                if(err) console.log(err);
+                        //         if(err) console.log(err);
         
-                                console.log('Customers added to Emma group.');
+                        //         console.log('Customers added to Emma group.');
         
-                                exitScript();
+                        //         exitScript();
         
-                            });
+                        //     });
     
-                        }else {
+                        // }else {
     
-                            exitScript();
+                        exitScript();
     
-                        }
+                        // }
     
                         function exitScript() {
     
