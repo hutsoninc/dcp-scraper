@@ -123,6 +123,7 @@ async function scrape(options) {
                         0,
                         2
                     );
+                    let createdDate = tableRows[j].childNodes[6].innerText;
 
                     branch = branches[Number(branch)];
 
@@ -131,6 +132,7 @@ async function scrape(options) {
                         firstname,
                         lastname,
                         branch,
+                        createdDate
                     });
                 }
 

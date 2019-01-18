@@ -7,6 +7,7 @@ var customerSchema = new Schema({
     email: String,
     firstname: String,
     lastname: String,
+    createdDate: Date
 });
 
 module.exports = mongoose.model('Customer', customerSchema);
