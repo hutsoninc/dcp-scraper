@@ -41,11 +41,11 @@ async function init() {
     });
 }
 
-async function run() {
+async function run(options) {
     try {
         await init();
 
-        let data = await scrape({ headless: false });
+        let data = await scrape(options);
 
         console.log('Checking database for customers');
 
@@ -63,7 +63,7 @@ async function run() {
 
         data = await Promise.all(promises);
 
-        data.filter(obj => obj);
+        data = data.filter(obj => obj !== null);
 
         console.log('Adding customers to HubSpot');
 
