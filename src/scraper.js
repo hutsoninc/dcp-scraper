@@ -95,15 +95,12 @@ async function scrape(options) {
             return Math.ceil(Number(totalCustomers) / 100);
         });
 
-        console.log('Pages: ' + customerPages);
-
         for (let i = 1; i <= customerPages; i++) {
             let ind = i;
             if (ind !== 1) {
                 if (ind > 6) {
                     ind = (ind % 6) + 2;
                 }
-                console.log(i);
                 await page.click(
                     '.pagination-list > li:nth-child(' + (ind + 1) + ') a'
                 );
