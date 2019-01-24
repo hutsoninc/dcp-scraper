@@ -125,7 +125,7 @@ async function scrape(options) {
                     );
                     let createdDate = tableRows[j].childNodes[6].innerText;
 
-                    branch = branches[Number(branch)];
+                    branch = branches[Number(branch)] || '';
 
                     data.push({
                         email,

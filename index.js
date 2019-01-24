@@ -54,7 +54,7 @@ async function run(options) {
                 Customer.findOne({
                     email: customer.email,
                 }).exec((err, res) => {
-                    if (err) console.error(err);
+                    if (err) console.log(err);
                     if (!res) resolve(customer);
                     resolve(null);
                 });
@@ -95,13 +95,16 @@ async function run(options) {
                         createCustomer(customer).then(() => {
                             resolve();
                         });
+                    })
+                    .catch(err => {
+                        console.log(err);
                     });
             });
         });
 
         await Promise.all(promises);
     } catch (err) {
-        console.error(err);
+        console.log(err);
         process.exit(1);
     }
 
@@ -113,7 +116,7 @@ async function createCustomer(data) {
 
     // Save new customer
     await newCustomer.save(err => {
-        if (err) console.error(err);
+        if (err) console.log(err);
         return;
     });
     // Report that new customer was saved
