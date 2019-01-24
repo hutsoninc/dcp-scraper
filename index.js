@@ -7,12 +7,10 @@ const { scrape } = require('./src/scraper');
 
 const Customer = require('./src/models/Customer.js');
 
-let today = new Date();
-let todayString =
-    today.getMonth() + 1 + '-' + today.getDate() + '-' + today.getFullYear();
+const today = new Date();
 
 async function init() {
-    console.log('Date: ' + todayString);
+    console.log('Date: ' + today);
 
     return new Promise(function(resolve, reject) {
         // Set up default mongoose connection
