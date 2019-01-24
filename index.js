@@ -47,7 +47,9 @@ async function run(options) {
 
         let data = await scrape(options);
 
-        console.log('Checking database for customers');
+        console.log('Scraped ' + data.length + ' customers');
+
+        console.log('Checking database for customers...');
 
         let promises = data.map(customer => {
             return new Promise((resolve, reject) => {
@@ -65,7 +67,7 @@ async function run(options) {
 
         data = data.filter(obj => obj !== null);
 
-        console.log('Adding customers to HubSpot');
+        console.log('Uploading ' + data.length + ' customers to HubSpot...');
 
         promises = data.map(customer => {
             return new Promise(async (resolve, reject) => {
