@@ -87,15 +87,25 @@ async function scrape(options) {
         await delay(5000);
 
         customerPages = await page.evaluate(() => {
-            const paginationListEl = document.querySelector('.pagination-list');
+            let totalCustomers = document.querySelectorAll('.customerCount')[0]
+                .innerText;
 
-            return paginationListEl.childElementCount - 2;
+            totalCustomers = totalCustomers.replace(/\D/g, '');
+
+            return Math.ceil(Number(totalCustomers) / 100);
         });
 
+        console.log('Pages: ' + customerPages);
+
         for (let i = 1; i <= customerPages; i++) {
-            if (i !== 1) {
+            let ind = i;
+            if (ind !== 1) {
+                if (ind > 6) {
+                    ind = (ind % 6) + 2;
+                }
+                console.log(i);
                 await page.click(
-                    '.pagination-list > li:nth-child(' + (i + 1) + ') a'
+                    '.pagination-list > li:nth-child(' + (ind + 1) + ') a'
                 );
             }
 
@@ -132,7 +142,7 @@ async function scrape(options) {
                         firstname,
                         lastname,
                         branch,
-                        createdDate
+                        createdDate,
                     });
                 }
 
@@ -142,7 +152,7 @@ async function scrape(options) {
             customerData = customerData.concat(result);
         }
 
-        await delay(15000);
+        await delay(10000);
 
         await browser.close();
     } catch (err) {
