@@ -1,7 +1,7 @@
 {
   "name": "dcp-scraper",
   "version": "1.0.0",
-  "description": "",
+  "description": "Used to scrape customer information from Dealer Customer Portal",
   "main": "index.js",
   "scripts": {
     "scrape": "node scripts/manual-scrape",
@@ -10,7 +10,7 @@
   },
   "author": {
     "name": "Austin Gordon",
-    "email": "agordon@hutsoninc.com",
+    "email": "gordon.austin2@gmail.com",
     "url": "http://austinleegordon.com"
   },
   "license": "MIT",
@@ -18,9 +18,9 @@
     "bluebird": "^3.5.3",
     "cron": "^1.6.0",
     "dotenv": "^6.2.0",
-    "express": "^4.16.3",
+    "express": "^4.16.4",
     "hubspot": "^2.0.0",
-    "mongoose": "^5.0.11",
-    "puppeteer": "^1.2.0"
+    "mongoose": "^5.4.10",
+    "puppeteer": "^1.12.2"
   }
 }
