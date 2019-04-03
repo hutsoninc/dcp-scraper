@@ -61,33 +61,36 @@ async function scrape(options) {
         );
 
         await page.waitForSelector(
-            '#p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl02_SedonaForm_ctl01_FormControl_DCPStatus_dropDownList'
+            '[ng-model="SearchFields.Status"]'
         );
         await page.click(
-            '#p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl02_SedonaForm_ctl01_FormControl_DCPStatus_dropDownList'
+            '[ng-model="SearchFields.Status"]'
         );
         await page.select(
-            '#p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl02_SedonaForm_ctl01_FormControl_DCPStatus_dropDownList',
-            'Enabled'
+            '[ng-model="SearchFields.Status"]',
+            'number:2'
         );
+
+        await delay(1000);
+
         await page.click(
-            '#p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl02_SedonaForm_ctl01_FormControl_SearchButton_btn'
+            '.Submitbtn[value=Search]'
         );
 
         await delay(5000);
 
         await page.waitForSelector(
-            '#p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl03_SedonaGrid_ctl01_UniGrid_p_drpPageSize'
+            '[name=PageRecordCount]'
         );
         await page.select(
-            '#p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl03_SedonaGrid_ctl01_UniGrid_p_drpPageSize',
-            '100'
+            '[name=PageRecordCount]',
+            'number:100'
         );
 
         await delay(5000);
 
         customerPages = await page.evaluate(() => {
-            let totalCustomers = document.querySelectorAll('.customerCount')[0]
+            let totalCustomers = document.querySelectorAll('.DealerCustomerTotalCustomers')[0]
                 .innerText;
 
             totalCustomers = totalCustomers.replace(/\D/g, '');
@@ -98,9 +101,9 @@ async function scrape(options) {
         for (let i = 1; i <= customerPages; i++) {
             let ind = i;
             if (ind !== 1) {
-                if (ind > 6) {
-                    ind = (ind % 6) + 2;
-                }
+                // if (ind > 6) {
+                //     ind = (ind % 6) + 2;
+                // }
                 await page.click(
                     '.pagination-list > li:nth-child(' + (ind + 1) + ') a'
                 );
@@ -114,7 +117,7 @@ async function scrape(options) {
                 let data = [];
 
                 const tableEl = document.getElementById(
-                    'p_lt_zonemain_pageplaceholder_p_lt_zoneContent_pageplaceholder_p_lt_ctl03_SedonaGrid_ctl01_UniGrid_v'
+                    'dealercustomerstable'
                 );
 
                 const tableRows = tableEl.querySelectorAll('tr');
@@ -122,15 +125,22 @@ async function scrape(options) {
                 for (let j = 1; j < tableRows.length; j++) {
                     let email = tableRows[
                         j
-                    ].childNodes[3].innerText.toLowerCase();
-                    let fullName = tableRows[j].childNodes[4].innerText;
-                    let firstname = fullName.split(' ')[0];
-                    let lastname = fullName.split(' ')[1];
-                    let branch = tableRows[j].childNodes[5].innerText.substr(
+                    ].childNodes[5].innerText.toLowerCase();
+                    let fullname = tableRows[j].childNodes[7].innerText;
+                    let splitname = fullname.split(' ');
+                    let firstname, lastname;
+                    if(splitname.length > 2) {
+                        lastname = splitname.pop();
+                        firstname = splitname.join(' ');
+                    }else {
+                        firstname = splitname[0];
+                        lastname = splitname[1];
+                    }
+                    let branch = tableRows[j].childNodes[11].innerText.substr(
                         0,
                         2
                     );
-                    let createdDate = tableRows[j].childNodes[6].innerText;
+                    let createdDate = tableRows[j].childNodes[13].innerText;
 
                     branch = branches[Number(branch)] || '';
 
