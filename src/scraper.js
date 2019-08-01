@@ -101,9 +101,9 @@ async function scrape(options) {
         for (let i = 1; i <= customerPages; i++) {
             let ind = i;
             if (ind !== 1) {
-                // if (ind > 6) {
-                //     ind = (ind % 6) + 2;
-                // }
+                if (ind > 10) {
+                    ind = (ind % 10) + 2;
+                }
                 await page.click(
                     '.pagination-list > li:nth-child(' + (ind + 1) + ') a'
                 );
