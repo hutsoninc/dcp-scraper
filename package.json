@@ -19,7 +19,7 @@
     "cron": "^1.6.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
-    "hubspot": "^2.0.0",
+    "hubspot": "^2.3.0",
     "mongoose": "^5.4.10",
     "puppeteer": "^1.12.2"
   }
