@@ -38,21 +38,14 @@ async function scrape(options) {
         customerData = [];
 
     try {
+        // Log in
         await page.goto('https://hutson.dealercustomerportal.com/Login');
-
-        await page.waitForSelector(
-            '#p_lt_zonecontent_LogonForm_Login1_UserName'
-        );
-        await page.type(
-            '#p_lt_zonecontent_LogonForm_Login1_UserName',
-            process.env.DCP_USER
-        );
-        await page.type(
-            '#p_lt_zonecontent_LogonForm_Login1_Password',
-            process.env.DCP_PWD
-        );
-        await delay(1000);
-        await page.click('#p_lt_zonecontent_LogonForm_Login1_LoginButton');
+        await page.waitFor(1000);
+        await page.waitForSelector('#Input_Email');
+        await page.type('#Input_Email', process.env.DCP_USER);
+        await page.type('#Input_Password', process.env.DCP_PWD);
+        await page.waitFor(500);
+        await page.click('button[type=submit]');
 
         await delay(10000);
 
@@ -60,38 +53,25 @@ async function scrape(options) {
             'https://hutson.dealercustomerportal.com/Dealers/Customers'
         );
 
-        await page.waitForSelector(
-            '[ng-model="SearchFields.Status"]'
-        );
-        await page.click(
-            '[ng-model="SearchFields.Status"]'
-        );
-        await page.select(
-            '[ng-model="SearchFields.Status"]',
-            'number:2'
-        );
+        await page.waitForSelector('[ng-model="SearchFields.Status"]');
+        await page.click('[ng-model="SearchFields.Status"]');
+        await page.select('[ng-model="SearchFields.Status"]', 'number:2');
 
         await delay(1000);
 
-        await page.click(
-            '.Submitbtn[value=Search]'
-        );
+        await page.click('#serachbutton[value=Search]');
 
         await delay(5000);
 
-        await page.waitForSelector(
-            '[name=PageRecordCount]'
-        );
-        await page.select(
-            '[name=PageRecordCount]',
-            'number:100'
-        );
+        await page.waitForSelector('[name=PageRecordCount]');
+        await page.select('[name=PageRecordCount]', 'number:100');
 
         await delay(5000);
 
         customerPages = await page.evaluate(() => {
-            let totalCustomers = document.querySelectorAll('.DealerCustomerTotalCustomers')[0]
-                .innerText;
+            let totalCustomers = document.querySelector(
+                '.DealerCustomerTotalCustomers'
+            ).innerText;
 
             totalCustomers = totalCustomers.replace(/\D/g, '');
 
@@ -116,9 +96,7 @@ async function scrape(options) {
             result = await page.evaluate(branches => {
                 let data = [];
 
-                const tableEl = document.getElementById(
-                    'dealercustomerstable'
-                );
+                const tableEl = document.getElementById('dealercustomerstable');
 
                 const tableRows = tableEl.querySelectorAll('tr');
 
@@ -129,10 +107,10 @@ async function scrape(options) {
                     let fullname = tableRows[j].childNodes[7].innerText;
                     let splitname = fullname.split(' ');
                     let firstname, lastname;
-                    if(splitname.length > 2) {
+                    if (splitname.length > 2) {
                         lastname = splitname.pop();
                         firstname = splitname.join(' ');
-                    }else {
+                    } else {
                         firstname = splitname[0];
                         lastname = splitname[1];
                     }

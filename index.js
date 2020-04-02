@@ -14,15 +14,12 @@ async function init() {
 
     return new Promise(function(resolve, reject) {
         // Set up default mongoose connection
-        mongoose.connect(
-            process.env.DB_LOCATION,
-            err => {
-                if (err) {
-                    console.log(err);
-                    process.exit(1);
-                }
+        mongoose.connect(process.env.DB_LOCATION, err => {
+            if (err) {
+                console.log(err);
+                process.exit(1);
             }
-        );
+        });
 
         // Get the default connection
         let db = mongoose.connection;
@@ -98,6 +95,7 @@ async function run(options) {
                     })
                     .catch(err => {
                         console.log(err);
+                        resolve();
                     });
             });
         });
